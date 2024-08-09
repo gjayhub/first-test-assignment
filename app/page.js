@@ -13,19 +13,28 @@ const initialPagesList = [
 
 export default function Home() {
   const [pagesList, setPagesList] = useState(initialPagesList);
-  const [toggleAllChecked, setToggleAllChecked] = useState(false);
+  const [toggleAllChecked, setToggleAllChecked] = useState(
+    initialPagesList.every(({ isChecked }) => isChecked)
+  );
 
   const handleAllPagesChange = () => {
-    setToggleAllChecked((prevAllChecked) => !prevAllChecked);
+    const newCheckedState = !toggleAllChecked;
+    setToggleAllChecked(newCheckedState);
     setPagesList((prevPages) =>
-      prevPages.map((page) => ({ ...page, isChecked: !toggleAllChecked }))
+      prevPages.map((page) => ({ ...page, isChecked: newCheckedState }))
     );
   };
 
   const handlePageChange = (id, isChecked) => {
-    setPagesList((prevPages) =>
-      prevPages.map((page) => (page.id === id ? { ...page, isChecked } : page))
+    const updatedPagesList = pagesList.map((page) =>
+      page.id === id ? { ...page, isChecked } : page
     );
+    setPagesList(updatedPagesList);
+
+    const newToggleAllChecked = updatedPagesList.every(
+      ({ isChecked }) => isChecked
+    );
+    setToggleAllChecked(newToggleAllChecked);
   };
 
   return (
